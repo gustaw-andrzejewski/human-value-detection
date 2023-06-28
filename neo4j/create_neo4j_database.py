@@ -1,3 +1,4 @@
+import json
 import time
 from collections import defaultdict
 from functools import partial
@@ -19,7 +20,7 @@ PREMISE = "Premise"
 SHARES_VALUES_WITH = "SHARES_VALUES_WITH"
 STANCE = "Stance"
 
-SIMILARITY_THRESHOLD = 0.5
+SIMILARITY_THRESHOLD = 0.67
 
 
 def load_data() -> Tuple[DatasetDict, dict]:
@@ -113,7 +114,7 @@ def create_neo4j_database(dataset: DatasetDict, similarity_dict: Dict) -> None:
         )
         graph.create(node)
 
-    with tqdm(similarity_dict.items(), "Creating edges") as t:
+    with tqdm(similarity_dict.items(), "Creating relationships") as t:
         for ((id1, id2), similarity) in t:
             if similarity >= SIMILARITY_THRESHOLD:
                 node1 = graph.nodes.match(ARGUMENT, id=id1).first()
@@ -121,13 +122,9 @@ def create_neo4j_database(dataset: DatasetDict, similarity_dict: Dict) -> None:
                 rel = Relationship(
                     node1, SHARES_VALUES_WITH, node2, similarity=float(similarity)
                 )
-                graph.create(rel)
-                rel = Relationship(
-                    node2, SHARES_VALUES_WITH, node1, similarity=float(similarity)
-                )
-                graph.create(rel)
+                graph.merge(rel)
 
-                t.set_description(f"Creating edges - added: {t.n} edges")
+                t.set_description(f"Creating relationships - added: {t.n} relationships")
                 t.refresh()
 
 
@@ -137,4 +134,7 @@ if __name__ == "__main__":
     similarity_dict = calculate_similarity_matrix(
         inverted_index, dataset, argument_id_map
     )
+    similarity_dict_json = {str(key): value for key, value in similarity_dict.items()}
+    with open("similarity_dict.json", "w") as f:
+        json.dump(similarity_dict_json, f)
     create_neo4j_database(dataset, similarity_dict)
