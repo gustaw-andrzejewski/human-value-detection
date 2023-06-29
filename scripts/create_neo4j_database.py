@@ -10,7 +10,7 @@ from datasets import DatasetDict, concatenate_datasets, load_dataset
 from py2neo import Graph, Node, Relationship
 from tqdm import tqdm
 
-from neo4j_config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USERNAME
+from neo4j.neo4j_config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USERNAME
 
 ARGUMENT = "ARGUMENT"
 ARGUMENT_ID = "Argument ID"
