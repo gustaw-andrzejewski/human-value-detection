@@ -10,7 +10,7 @@ import torch
 from neo4j.neo4j_config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USERNAME
 
 EMBEDDINGS_FILENME = Path("bert_embeddings.npy")
-DATA_FOLDER = Path("data/")
+DATA_FOLDER = Path("workspace/data/")
 
 
 def load_bert() -> Tuple[AutoTokenizer, AutoModel]:
