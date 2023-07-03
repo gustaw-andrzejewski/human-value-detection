@@ -8,7 +8,7 @@ from neo4j.neo4j_config import NEO4J_PASSWORD, NEO4J_URI, NEO4J_USERNAME
 
 EDGE_INDEX_FILENAME = Path("edge_index.npy")
 EDGE_ATTR_FILENAME = Path("edge_attributes.npy")
-DATA_FOLDER = Path("workspace/data/")
+DATA_FOLDER = Path("workspace/data/raw")
 
 
 def get_neo4j_db(
@@ -88,14 +88,10 @@ def save_edge_index_and_attributes(
 if __name__ == "__main__":
     neo4j_db = get_neo4j_db(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD)
     unique_node_ids = get_unique_node_ids(neo4j_db)
-    print(f"Fetched {len(unique_node_ids)} unique nodes.")
     unique_relationships = get_unique_relationships(neo4j_db)
-    print(f"Fetched {len(unique_relationships)} unique relationships.")
     edge_index, edge_attr = create_edge_index_and_attributes(
         unique_relationships, unique_node_ids
     )
-    print("Edge index and attributes created.")
     save_edge_index_and_attributes(
         edge_index, edge_attr, EDGE_INDEX_FILENAME, EDGE_ATTR_FILENAME
     )
-    print(f"Edge index and attributes saved to {DATA_FOLDER}.")
