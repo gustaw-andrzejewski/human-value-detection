@@ -81,7 +81,7 @@ def save_edge_index_and_attributes(
     """
     if not DATA_FOLDER.exists():
         DATA_FOLDER.mkdir()
-    np.save(DATA_FOLDER / edge_index_filename, edge_index)
+    np.save(DATA_FOLDER / edge_index_filename, edge_index.transpose())
     np.save(DATA_FOLDER / edge_attr_filename, edge_attr)
 
 
