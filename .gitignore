@@ -1,6 +1,7 @@
 # Jupyter Notebook and test files
 .ipynb_checkpoints
 *test.ipynb
+*test.py
 
 # neo4j config file
 neo4j_config.py
@@ -9,6 +10,14 @@ neo4j_config.py
 __pycache__/
 
 # data
-data/
+raw/
 *.npy
 *.json
+*.pt
+
+# wandb
+wandb/
+wandb*.yaml
+
+# pythonpath
+pythonpath
