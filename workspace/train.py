@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import wandb
 import yaml
-from data.ArgumentsDataset import ArgumentsDataset
+from data import ArgumentsDataset
 from models import GAT, GCN, GraphSAGE
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from torch_geometric.loader import DataLoader
@@ -18,8 +18,8 @@ VAL_ACCURACY = "val_accuracy"
 VAL_PRECISION = "val_precision"
 VAL_RECALL = "val_recall"
 VAL_F1 = "val_f1"
-EPOCHS = 200
-PATIENCE = 25
+EPOCHS = 1000
+PATIENCE = 50
 
 
 def train():
@@ -70,7 +70,6 @@ def train():
 def train_model(model, train_loader, epochs, patience, learning_rate):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
-    model = torch.compile(model)
     criterion = torch.nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
@@ -83,7 +82,7 @@ def train_model(model, train_loader, epochs, patience, learning_rate):
         train_loss = train_one_epoch(model, train_loader, optimizer, device, criterion)
         val_loss, val_metrics = evaluate_model(model, train_loader, device, criterion)
         print(f"Epoch: {epoch+1}, train loss: {train_loss}, val loss: {val_loss}, val f1: {val_metrics[VAL_F1]}, val accuracy: {val_metrics[VAL_ACCURACY]}")
-        # Update the learning rate
+
         scheduler.step()
 
         # Log the training and validation loss and metrics
@@ -103,13 +102,13 @@ def train_model(model, train_loader, epochs, patience, learning_rate):
             best_val_loss = val_loss
             patience_counter = 0  # Reset counter
 
-            # # Save the model file
-            # torch.save(model.state_dict(), BEST_MODEL_NAME)
+            # Save the model file
+            torch.save(model.state_dict(), BEST_MODEL_NAME)
 
-            # # Log the model file as an artifact in wandb
-            # artifact = wandb.Artifact(MODEL, type=MODEL)
-            # artifact.add_file(BEST_MODEL_NAME)
-            # wandb.run.log_artifact(artifact)
+            # Log the model file as an artifact in wandb
+            artifact = wandb.Artifact(MODEL, type=MODEL)
+            artifact.add_file(BEST_MODEL_NAME)
+            wandb.run.log_artifact(artifact)
         else:
             patience_counter += 1
             if patience_counter >= patience:
@@ -151,7 +150,7 @@ def evaluate_model(model, loader, device, criterion):
     all_preds = np.concatenate(all_preds, axis=0)
     all_labels = np.concatenate(all_labels, axis=0)
     precision, recall, fscore, _ = precision_recall_fscore_support(
-        all_labels, all_preds, average="micro"
+        all_labels, all_preds, average="macro"
     )
     accuracy = accuracy_score(all_labels, all_preds)
     metrics = {
