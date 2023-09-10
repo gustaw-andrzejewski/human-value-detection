@@ -12,9 +12,9 @@ class ArgumentsDataset(InMemoryDataset):
     @property
     def raw_file_names(self) -> list:
         return [
-            "edge_index.npy",
-            "edge_attributes.npy",
-            "bert_embeddings.npy",
+            "arg_edge_index.npy",
+            "arg_edge_attributes.npy",
+            "arguments_bert_embeddings.npy",
             "node_labels.npy",
         ]
 
