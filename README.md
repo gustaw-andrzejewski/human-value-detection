@@ -5,21 +5,16 @@ from argumentative texts. Unlike traditional Natural Language Process-
 ing (NLP) models, which operate on linear sequences of text, this approach
 leverages the interconnections between different arguments and encapsu-
 lates the semantic richness of the argumentative texts into node features
-using BERT embeddings. The data was structured into an undirected
+using BERT embeddings. The data was structured into a directed
 graph, with nodes representing arguments and edges established based
-on the Jaccard similarity of arguments’ values. Experimentation revealed
-that graph-based models could potentially be useful for such a task. How-
+on the cosine similarity of arguments’ values. Experimentation revealed
+that graph-based models could potentially be useful for such a task, but don't seem to 
+exceed the results obtained by regular large language model fine-tuning. How-
 ever, as the project was just an investigation of graph-based methods for
 multi-label text classifications using relationships between the texts and
-the approach used for connecting the nodes was based on the labels, it has
-limitations associated with the model’s reliance on existing node connec-
-tions for new argument classification so ideas for future work include an
-iterative refinement process for classification and consideration of alter-
-native features for establishing node connections or a different approach
-to constructing arguments connections.
+the approaches avilable in the literature show that utilizing the label connections
+seems to bring even more promising results, perhaps combining both of these approaches would
+yield more satisfactory results.
 
 The project was based on the following task:
 https://touche.webis.de/semeval23/touche23-web/
-
-Here are the results I have obtained:
-https://api.wandb.ai/links/gustaw_andrzejewski/4qn9rxj8
